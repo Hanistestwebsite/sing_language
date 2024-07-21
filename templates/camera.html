@@ -305,7 +305,7 @@
 </html> 
 -->
 
-
+<!--
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -435,6 +435,132 @@
     </script>
 </body>
 </html>
+-->
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Recognition</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #563d7c;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+        .header {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .header img {
+            height: 40px;
+        }
+        .title {
+            margin-top: 20px;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        .video-container {
+            position: relative;
+            width: 60%;
+            max-width: 600px;
+            height: auto;
+            border: 5px solid #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+        }
+        img {
+            width: 100%;
+            height: auto;
+        }
+        .prediction {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/">
+            <img src="/static/logo.png" alt="Back to Home">
+        </a>
+    </div>
+    <div class="title">Sign Language Detection</div>
+    <div class="video-container">
+        <img id="output" src="{{ url_for('video_feed') }}" alt="Camera feed">
+    </div>
+    <div class="prediction" id="prediction">Prediction: Loading...</div>
+
+    <script>
+        // Function to start the camera and stream video
+        async function startCamera() {
+            const video = document.createElement('video');
+            video.id = 'video';
+            video.autoplay = true;
+            document.body.appendChild(video);
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+
+                video.addEventListener('play', () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+
+                    setInterval(() => {
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        canvas.toBlob(blob => {
+                            const formData = new FormData();
+                            formData.append('frame', blob);
+
+                            fetch('/predict', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                document.getElementById('prediction').textContent = `Prediction: ${data.prediction}`;
+                            });
+                        }, 'image/jpeg');
+                    }, 1000); // Send frame every 1 second
+                });
+            } catch (error) {
+                console.error('Error accessing the camera: ', error);
+            }
+        }
+
+        window.onload = startCamera;
+    </script>
+</body>
+</html>
 
