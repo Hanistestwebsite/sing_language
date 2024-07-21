@@ -188,8 +188,8 @@
 
 
 
- 
- <!DOCTYPE html>
+ <!--
+  <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -199,7 +199,7 @@
         body {
             margin: 0;
             padding: 0;
-            height: 100%;
+            height: 100%; 
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -303,6 +303,138 @@
     </script>
 </body>
 </html> 
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Recognition</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #563d7c;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+        .header {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .header img {
+            height: 40px;
+        }
+        .title {
+            margin-top: 20px;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        .video-container {
+            position: relative;
+            width: 60%;
+            max-width: 600px;
+            height: auto;
+            border: 5px solid #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+        }
+        video {
+            width: 100%;
+            height: auto;
+        }
+        .slider-container {
+            margin-top: 20px;
+            width: 80%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .slider-label {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .slider {
+            width: 100%;
+        }
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2em;
+            }
+            .video-container {
+                width: 80%;
+            }
+            .slider-container {
+                width: 90%;
+            }
+        }
+        @media (max-width: 480px) {
+            .title {
+                font-size: 1.5em;
+            }
+            .video-container {
+                width: 100%;
+            }
+            .slider-label {
+                font-size: 1em;
+            }
+            .slider-container {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/">
+            <img src="/static/logo.png" alt="Back to Home">
+        </a>
+    </div>
+    <div class="title">Sign Language Detection</div>
+    <div class="video-container">
+        <video id="video" autoplay></video>
+    </div>
+    <div class="slider-container">
+        <div class="slider-label">Masking adjuster</div>
+        <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+        <p>Value: <span id="sliderValue">50</span></p>
+    </div>
+
+    <script>
+        // Access the camera and display the video feed
+        async function startCamera() {
+            const video = document.getElementById('video');
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } catch (error) {
+                console.error('Error accessing the camera: ', error);
+            }
+        }
+
+        // Initialize the camera on page load
+        window.onload = startCamera;
+
+        // Slider functionality
+        var slider = document.getElementById("myRange");
+        var output = document.getElementById("sliderValue");
+        slider.oninput = function() {
+            output.innerHTML = this.value;
+        }
+    </script>
+</body>
+</html>
 
 
 
